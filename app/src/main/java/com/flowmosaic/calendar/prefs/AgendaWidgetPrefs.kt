@@ -23,6 +23,7 @@ class AgendaWidgetPrefs internal constructor(private val sharedPreferences: Shar
         private const val PREF_SELECTED_CALENDARS = "selected_calendars"
         private const val PREF_SHOW_ACTION_BUTTONS = "key_show_action_buttons"
         private const val PREF_SHOW_NO_UPCOMING_EVENTS = "key_show_no_upcoming_events"
+        private const val PREF_SHOW_CALENDAR_COLOR = "key_show_calendar_color"
         private const val PREF_SHOW_END_TIME = "key_show_end_time"
         private const val PREF_SHOW_LOCATION = "key_show_location"
         private const val PREF_NUMBER_OF_DAYS = "key_number_of_days"
@@ -147,6 +148,20 @@ class AgendaWidgetPrefs internal constructor(private val sharedPreferences: Shar
     fun setShowNoUpcomingEventsText(showNoUpcomingEvents: Boolean, widgetId: String) {
         val prefsKey = getKeyWithWidgetIdSave(PREF_SHOW_NO_UPCOMING_EVENTS, widgetId)
         sharedPreferences.edit().putBoolean(prefsKey, showNoUpcomingEvents).apply()
+    }
+
+    fun getShowCalendarColor(widgetId: String): Boolean {
+        val (prefsKey, prefExists) = getKeyWithWidgetId(PREF_SHOW_CALENDAR_COLOR, widgetId)
+        val result = sharedPreferences.getBoolean(prefsKey, true)
+        if (!prefExists) {
+            setShowCalendarColor(result, widgetId)
+        }
+        return result
+    }
+
+    fun setShowCalendarColor(showCalendarColor: Boolean, widgetId: String) {
+        val prefsKey = getKeyWithWidgetIdSave(PREF_SHOW_CALENDAR_COLOR, widgetId)
+        sharedPreferences.edit().putBoolean(prefsKey, showCalendarColor).apply()
     }
 
     fun getShowEndTime(widgetId: String): Boolean {

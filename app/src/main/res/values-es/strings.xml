@@ -7,6 +7,7 @@
     <string name="show_end_time">Mostrar hora de finalización</string>
     <string name="show_action_buttons">Mostrar botones de acción</string>
     <string name="show_no_upcoming_events">Mostrar texto \"Sin eventos próximos\"</string>
+    <string name="show_calendar_color">Mostrar color del calendario</string>
     <string name="use_12_hour_format">Usar formato de 12 horas</string>
     <string name="show_location">Mostrar ubicación</string>
     <string name="date_separator_visible">Mostrar separador de fecha</string>

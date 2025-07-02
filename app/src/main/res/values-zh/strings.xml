@@ -7,6 +7,7 @@
     <string name="show_end_time">展示結束時間</string>
     <string name="show_action_buttons">显示操作按钮</string>
     <string name="show_no_upcoming_events">显示没有即将到来的事件文本</string>
+    <string name="show_calendar_color">显示日历颜色</string>
     <string name="use_12_hour_format">使用12小时制</string>
     <string name="show_location">显示位置</string>
     <string name="date_separator_visible">显示日期分隔符</string>

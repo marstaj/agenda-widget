@@ -67,6 +67,8 @@ class EventsRemoteViewsFactory(private val context: Context, intent: Intent) :
         val textColor = prefs.getTextColor(widgetId).toArgb()
 
         return RemoteViews(context.packageName, getLayoutId(item, textColor)).apply {
+            val showCalendarColor = prefs.getShowCalendarColor(widgetId)
+            val fontSize = prefs.getFontSize(widgetId)
             val textViewId = getTextViewId(item, textColor)
             val text = when (item) {
                 is CalendarViewItem.Day -> CalendarDateUtils.getFormattedDate(
@@ -74,17 +76,23 @@ class EventsRemoteViewsFactory(private val context: Context, intent: Intent) :
                     item.date.time
                 )
 
-                is CalendarViewItem.Event -> CalendarDateUtils.getCalendarEventText(
-                    item.event,
-                    context,
-                    widgetId,
-                    prefs.getShowLocation(widgetId)
-                )
+                is CalendarViewItem.Event -> {
+                    // Spaces instead of margin for scaling with font size
+                    val prefix = if (showCalendarColor) "  " else ""
+                    prefix + CalendarDateUtils.getCalendarEventText(
+                        item.event,
+                        context,
+                        widgetId,
+                        prefs.getShowLocation(widgetId),
+                    )
+                }
             }
-
+            if (item is CalendarViewItem.Event) {
+                setUpCalendarColorBar(this, showCalendarColor, item, fontSize)
+            }
             setTextColor(textViewId, textColor)
             setUpSeparator(textColor)
-            setUpFontSize(textViewId, item)
+            setUpFontSize(textViewId, fontSize, item)
             setUpVerticalSpacing(context, textViewId, item)
             setUpFontAlignment(textViewId)
 
@@ -145,12 +153,16 @@ class EventsRemoteViewsFactory(private val context: Context, intent: Intent) :
         setInt(textViewId, "setGravity", textAlignment)
     }
 
-    private fun RemoteViews.setUpFontSize(textViewId: Int, calendarViewItem: CalendarViewItem) {
+    private fun RemoteViews.setUpFontSize(
+        textViewId: Int,
+        fontSize: AgendaWidgetPrefs.FontSize,
+        calendarViewItem: CalendarViewItem
+    ) {
         val defaultTextSizeSp = when (calendarViewItem) {
             is CalendarViewItem.Day -> 16f
             is CalendarViewItem.Event -> 14f
         }
-        val fontSizeAdjustment = when (prefs.getFontSize(widgetId)) {
+        val fontSizeAdjustment = when (fontSize) {
             AgendaWidgetPrefs.FontSize.SMALL -> -2f
             AgendaWidgetPrefs.FontSize.MEDIUM -> 0f
             AgendaWidgetPrefs.FontSize.LARGE -> 2f
@@ -196,7 +208,7 @@ class EventsRemoteViewsFactory(private val context: Context, intent: Intent) :
                     }, context
                 )
                 setViewPadding(
-                    textViewId,
+                    R.id.item_event_root,
                     0, verticalPadding, 0, verticalPadding,
                 )
             }
@@ -246,4 +258,29 @@ class EventsRemoteViewsFactory(private val context: Context, intent: Intent) :
         return luminance > 0.5
     }
 
+    private fun setUpCalendarColorBar(
+        remoteViews: RemoteViews,
+        showCalendarColor: Boolean,
+        item: CalendarViewItem.Event,
+        fontSize: AgendaWidgetPrefs.FontSize
+    ) {
+        val colorBarId = R.id.item_event_calendar_color_bar
+        if (showCalendarColor) {
+            remoteViews.setViewVisibility(colorBarId, View.VISIBLE)
+            remoteViews.setInt(colorBarId, "setBackgroundColor", item.event.calendarColor)
+            val width = UnitConverter.dpToPx(
+                when (fontSize) {
+                    AgendaWidgetPrefs.FontSize.SMALL -> 2f
+                    AgendaWidgetPrefs.FontSize.MEDIUM -> 3f
+                    AgendaWidgetPrefs.FontSize.LARGE -> 4f
+                }, context
+            )
+            remoteViews.setViewPadding( // Using padding as width for simplicity
+                colorBarId,
+                width, 0, 0, 0
+            )
+        } else {
+            remoteViews.setViewVisibility(colorBarId, View.GONE)
+        }
+    }
 }

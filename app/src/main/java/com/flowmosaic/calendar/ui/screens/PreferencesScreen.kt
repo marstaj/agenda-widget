@@ -158,6 +158,9 @@ fun DateAndTimePrefsSection(
 ) {
     val context = LocalContext.current
 
+    val showCalendarColor = remember {
+        mutableStateOf(prefs.getShowCalendarColor(widgetId))
+    }
     val showEndTime = remember {
         mutableStateOf(prefs.getShowEndTime(widgetId))
     }
@@ -168,6 +171,16 @@ fun DateAndTimePrefsSection(
         mutableStateOf(prefs.getShowLocation(widgetId))
     }
 
+    CheckboxRow(
+        displayText = context.getString(R.string.show_calendar_color),
+        loggingItem = AgendaWidgetLogger.PrefsScreenItemName.SHOW_CALENDAR_COLOR,
+        checkboxValue = showCalendarColor,
+        saveCheckboxValue = { newValue: Boolean ->
+            showCalendarColor.value = newValue
+            prefs.setShowCalendarColor(newValue, widgetId)
+        },
+        logger = logger
+    )
     CheckboxRow(
         displayText = context.getString(R.string.show_end_time),
         loggingItem = AgendaWidgetLogger.PrefsScreenItemName.SHOW_END_TIME,

@@ -19,6 +19,7 @@ data class CalendarEvent(
     val location: String?,
     val isAllDay: Boolean,
     val eventId: Long,
+    val calendarColor: Int,
     val actualStartTime: Long,
     val actualEndTime: Long,
 )
@@ -90,6 +91,7 @@ class CalendarFetcher {
             CalendarContract.Instances.ALL_DAY,
             CalendarContract.Instances.BEGIN,
             CalendarContract.Instances.END,
+            CalendarContract.Instances.CALENDAR_COLOR,
         )
 
         val selection =
@@ -128,6 +130,8 @@ class CalendarFetcher {
                 val actualStartTime =
                     cursor.safeGet(CalendarContract.Instances.BEGIN, Cursor::getLong)
                 val actualEndTime = cursor.safeGet(CalendarContract.Instances.END, Cursor::getLong)
+                val calendarColor =
+                    cursor.safeGet(CalendarContract.Instances.CALENDAR_COLOR, Cursor::getInt)
 
                 if (calendarId == null ||
                     eventId == null ||
@@ -136,6 +140,7 @@ class CalendarFetcher {
                     allDay == null ||
                     actualStartTime == null ||
                     actualEndTime == null ||
+                    calendarColor == null ||
                     calendarId.toString() !in selectedCalendarIds
                 ) {
                     continue
@@ -155,6 +160,7 @@ class CalendarFetcher {
                         location,
                         allDay,
                         eventId,
+                        calendarColor,
                         actualStartTime,
                         actualEndTime
                     )

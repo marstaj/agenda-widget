@@ -7,6 +7,7 @@
     <string name="show_end_time">แสดงเวลาที่สิ้นสุด</string>
     <string name="show_action_buttons">แสดงปุ่มดำเนินการ</string>
     <string name="show_no_upcoming_events">แสดงข้อความ \"ไม่มีกิจกรรมที่จะมาถึง\"</string>
+    <string name="show_calendar_color">แสดงสีปฏิทิน</string>
     <string name="use_12_hour_format">ใช้รูปแบบ 12 ชั่วโมง</string>
     <string name="show_location">แสดงตำแหน่ง</string>
     <string name="date_separator_visible">แสดงตัวคั่นวันที่</string>
